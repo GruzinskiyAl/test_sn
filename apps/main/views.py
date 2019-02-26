@@ -5,8 +5,14 @@ from .models import (PostModel,
                      User)
 from .serializers import (PostSerializer,
                           LikeSerializer,
-                          UserSerializer)
+                          UserSerializer,
+                          UserCreateSerializer)
 
+
+class UserCreateView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserCreateSerializer
+    
 
 
 
