@@ -1,0 +1,22 @@
+[
+  {
+    "model": "main.User",
+    "pk": 1,
+    "fields": {
+      "email": "admin@email.com",
+      "password": "qwerty12345",
+      "is_staff": true,
+      "is_superuser": true
+    }
+  },
+  {
+    "model": "main.User",
+    "pk": 2,
+    "fields": {
+      "email": "user1@email.com",
+      "password": "qwerty12345",
+      "is_staff": false,
+      "is_superuser": false
+    }
+  }
+]

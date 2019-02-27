@@ -1,0 +1,29 @@
+[
+  {
+    "model": "main.PostModel",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "title": "Test post 1",
+      "text": "Posts test text 1."
+    }
+  },
+  {
+    "model": "main.PostModel",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "title": "Test post 2",
+      "text": "Posts test text 2."
+    }
+  },
+  {
+    "model": "main.PostModel",
+    "pk": 3,
+    "fields": {
+      "user": 2,
+      "title": "Test post 3",
+      "text": "Posts test text 3."
+    }
+  }
+]
