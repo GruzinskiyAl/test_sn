@@ -14,8 +14,14 @@ class UserCreateView(generics.CreateAPIView):
     serializer_class = UserCreateSerializer
     
 
-class PostList(generics.ListCreateAPIView):
+class PostListView(generics.ListCreateAPIView):
     queryset = PostModel.objects.all()
     serializer_class = PostSerializer
 
+
+class SetLikeView():
+    pass
+
+class UnsetLikeView():
+    pass
 
