@@ -35,7 +35,13 @@ class UserSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class PostSerializer(serializers.ModelSerializer):
+class PostCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostModel
+        fields = "__all__"
+
+
+class PostReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostModel
         fields = "__all__"

@@ -1,6 +1,6 @@
 [
   {
-    "model": "main.LikeMode",
+    "model": "main.LikeModel",
     "pk": 1,
     "fields": {
       "user": 1,
@@ -8,7 +8,7 @@
     }
   },
   {
-    "model": "main.LikeMode",
+    "model": "main.LikeModel",
     "pk": 2,
     "fields": {
       "user": 2,

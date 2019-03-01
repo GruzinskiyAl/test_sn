@@ -14,13 +14,16 @@ from .views import (PostListView,
                     UserCreateView)
 
 
-class TestPostAPI(APITestCase):
+class TestAPI(APITestCase):
+    USER_PASSWORD = "qwerty12345"
     fixtures = [
         "users.json",
-        "posts.json"
+        "posts.json",
+        "likes.json"
     ]
 
     def setUp(self):
+        self.client = APIClient()
         self.factory = APIRequestFactory()
         self.admin_user = User.objects.get(email="admin@email.com")
         self.simple_user = User.objects.get(email="user1@email.com")
@@ -137,4 +140,18 @@ class TestPostAPI(APITestCase):
         self.assertEqual(User.objects.all().count(), self.init_users_count)
 
     def test_user_authentication(self):
-        pass
+        data = {
+            "email": self.simple_user.email,
+            "password": self.USER_PASSWORD
+        }
+        res = self.client.post(_("token-get-pair"), data=json.dumps(data), content_type="application/json")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(len(res.data), 2)
+
+    def test_user_authentication_incorrect_data(self):
+        data = {
+            "email": self.simple_user.email,
+            "password": "wrong_password"
+        }
+        res = self.client.post(_("token-get-pair"), data=json.dumps(data), content_type="application/json")
+        self.assertEqual(res.status_code, 400)

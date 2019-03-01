@@ -1,27 +1,38 @@
 from rest_framework import generics, mixins
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 
 from .models import (PostModel,
                      LikeModel,
                      User)
-from .serializers import (PostSerializer,
+from .serializers import (PostCreateSerializer,
+                          PostReadSerializer,
                           LikeSerializer,
                           UserSerializer,
                           UserCreateSerializer)
 
 
 class UserCreateView(generics.CreateAPIView):
+    permission_classes = (AllowAny, )
+
     queryset = User.objects.all()
     serializer_class = UserCreateSerializer
     
 
 class PostListView(generics.ListCreateAPIView):
+    permission_classes = (IsAuthenticatedOrReadOnly, )
+
     queryset = PostModel.objects.all()
-    serializer_class = PostSerializer
+    serializer_class = PostReadSerializer
 
 
-class SetLikeView():
-    pass
+class SetLikeView(APIView):
+    permission_classes = (IsAuthenticated, )
 
-class UnsetLikeView():
+    def post(self, request, *args, **kwards):
+        return Response("Hi")
+
+class UnsetLikeView(APIView):
     pass
 
