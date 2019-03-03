@@ -44,9 +44,13 @@ class PostModel(models.Model):
     user = models.ForeignKey("User", on_delete=models.CASCADE, null=False, blank=False)
     title = models.CharField(max_length=256, null=False, blank=False)
     text = models.TextField(null=False, blank=False)
+    published_date = models.DateField(auto_now_add=True)
+
+    class Meta:
+        ordering = ("-published_date", )
 
     def __str__(self):
-        return f'{self.id}__{self.title[:64]}...'
+        return f'{self.id}__{self.title[:61]}...' if len(self.title) > 64 else f'{self.id}__{self.title}'
 
 
 class LikeModel(models.Model):

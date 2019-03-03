@@ -1,5 +1,7 @@
-Object of this task is to create a simple REST API. You have to use Django and Django rest
-framework.
+Automated bot usage:
+
+python3 bot.py "path_to_config_file.json" "domain"
+
 Social Network
 
 Basic models:
@@ -35,15 +37,3 @@ Bot should read the configuration and create this activity:
 max_posts_per_user)
 - After creating the signup and posting activity, posts should be liked randomly, posts
 can be liked multiple times
-
-Notes
-- emailhunter and clearbit have either free pricing plans or free trial, the candidate can
-use their own account if he would like implement the functionality
-- visual aspect of the project is not important, the candidate can create a frontend for
-viewing the result, but it is not necessary ​ (will be a plus) ​ . Clean and usable REST
-API is important
-- the project is not defined in detail, the candidate should use their best judgment for
-every non-specified requirements (including chosen tech, third party apps, etc),
-however
-- every decision must be explained and backed by arguments in the interview
-- Result should be sent by providing a Git url. This is a mandatory requirement.

@@ -7,7 +7,7 @@ from apps.main import views
 urlpatterns = [
     path("post/", views.PostListView.as_view(), name="post-list"),
     path("post/like/", views.SetLikeView.as_view(), name="like-post"),
-    # path("post/unlike/", views.UnsetLikeView.as_view(), name="unlike-post"),
+    path("post/unlike/", views.RemoveLikeView.as_view(), name="unlike-post"),
 
     path("account/create/", views.UserCreateView.as_view(), name="create-user"),
     path("account/token/", TokenObtainPairView.as_view(), name="token-get-pair"),

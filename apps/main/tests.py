@@ -1,6 +1,6 @@
 import json
 from django.urls import reverse as _
-from rest_framework.test import (APITestCase,
+from rest_framework.test import (APITransactionTestCase,
                                  APIClient,
                                  APIRequestFactory,
                                  force_authenticate)
@@ -10,12 +10,11 @@ from .models import (User,
                      LikeModel)
 from .views import (PostListView,
                     SetLikeView,
-                    UnsetLikeView,
+                    RemoveLikeView,
                     UserCreateView)
 
 
-class TestAPI(APITestCase):
-    USER_PASSWORD = "qwerty12345"
+class TestAPI(APITransactionTestCase):
     fixtures = [
         "users.json",
         "posts.json",
@@ -23,7 +22,6 @@ class TestAPI(APITestCase):
     ]
 
     def setUp(self):
-        self.client = APIClient()
         self.factory = APIRequestFactory()
         self.admin_user = User.objects.get(email="admin@email.com")
         self.simple_user = User.objects.get(email="user1@email.com")
@@ -53,6 +51,8 @@ class TestAPI(APITestCase):
         res = view(req)
         self.assertEqual(res.status_code, 201)
         self.assertEqual(PostModel.objects.all().count(), self.init_posts_count + 1)
+        self.assertTrue(res.data["id"])
+        self.assertTrue(res.data["user"])
 
     def test_like_post_unauthenticated(self):
         data = {
@@ -83,14 +83,15 @@ class TestAPI(APITestCase):
         req = self.factory.post(_("like-post"), data=json.dumps(data), content_type="application/json")
         force_authenticate(req, user=self.simple_user)
         res = view(req)
-        self.assertEqual(res.status_code, 400)
-        self.assertEqual(LikeModel.objects.all().count(), self.init_likes_count)
+        likes_count = LikeModel.objects.all().count()
+        self.assertEqual(res.status_code, 201)
+        self.assertEqual(likes_count, self.init_likes_count)
 
     def test_unlike_post_unauthenticated(self):
         data = {
             "post": 2
         }
-        view = UnsetLikeView.as_view()
+        view = RemoveLikeView.as_view()
         req = self.factory.post(_("unlike-post"), data=json.dumps(data), content_type="application/json")
         res = view(req)
         self.assertEqual(res.status_code, 401)
@@ -100,7 +101,7 @@ class TestAPI(APITestCase):
         data = {
             "post": 2
         }
-        view = UnsetLikeView.as_view()
+        view = RemoveLikeView.as_view()
         req = self.factory.post(_("unlike-post"), data=json.dumps(data), content_type="application/json")
         force_authenticate(req, user=self.simple_user)
         res = view(req)
@@ -111,10 +112,11 @@ class TestAPI(APITestCase):
         data = {
             "post": 1
         }
-        view = UnsetLikeView.as_view()
+        view = RemoveLikeView.as_view()
         req = self.factory.post(_("unlike-post"), data=json.dumps(data), content_type="application/json")
+        force_authenticate(req, user=self.simple_user)
         res = view(req)
-        self.assertEqual(res.status_code, 400)
+        self.assertEqual(res.status_code, 204)
         self.assertEqual(LikeModel.objects.all().count(), self.init_likes_count)
 
     def test_user_registration(self):
@@ -139,19 +141,49 @@ class TestAPI(APITestCase):
         self.assertEqual(res.status_code, 400)
         self.assertEqual(User.objects.all().count(), self.init_users_count)
 
-    def test_user_authentication(self):
-        data = {
-            "email": self.simple_user.email,
-            "password": self.USER_PASSWORD
+
+class TestAuthAPI(APITransactionTestCase):
+    fixtures = (
+        'users.json',
+        "posts.json"
+    )
+
+    def setUp(self):
+        self.client = APIClient()
+
+        self.email = "test@email.com"
+        self.password = "qwerty12345"
+        self.data = {
+            "email": self.email,
+            "password": self.password
         }
-        res = self.client.post(_("token-get-pair"), data=json.dumps(data), content_type="application/json")
+
+    def test_user_authentication(self):
+        user = User.objects.create_user(email=self.email, password=self.password)
+        user.is_active = True
+        user.save()
+
+        res = self.client.post(_("token-get-pair"), data=json.dumps(self.data), content_type="application/json")
         self.assertEqual(res.status_code, 200)
         self.assertEqual(len(res.data), 2)
 
-    def test_user_authentication_incorrect_data(self):
+        token = res.data["access"]
         data = {
-            "email": self.simple_user.email,
-            "password": "wrong_password"
+            "title": "new title",
+            "text": "new text"
+        }
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
+        res = self.client.post(_("post-list"), data=json.dumps(data), content_type="application/json")
+        self.assertEqual(res.status_code, 201)
+
+    def test_user_authentication_incorrect_data(self):
+        user = User.objects.create_user(email=self.email, password=self.password)
+        user.is_active = True
+        user.save()
+
+        data = {
+            "email": self.email,
+            "password": "incorrect"
         }
         res = self.client.post(_("token-get-pair"), data=json.dumps(data), content_type="application/json")
         self.assertEqual(res.status_code, 400)

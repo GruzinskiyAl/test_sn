@@ -5,7 +5,8 @@
     "fields": {
       "user": 1,
       "title": "Test post 1",
-      "text": "Posts test text 1."
+      "text": "Posts test text 1.",
+      "published_date": "2019-01-01"
     }
   },
   {
@@ -14,7 +15,8 @@
     "fields": {
       "user": 2,
       "title": "Test post 2",
-      "text": "Posts test text 2."
+      "text": "Posts test text 2.",
+      "published_date": "2019-01-01"
     }
   },
   {
@@ -23,7 +25,8 @@
     "fields": {
       "user": 2,
       "title": "Test post 3",
-      "text": "Posts test text 3."
+      "text": "Posts test text 3.",
+      "published_date": "2019-01-01"
     }
   }
 ]

@@ -24,15 +24,40 @@ class PostListView(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticatedOrReadOnly, )
 
     queryset = PostModel.objects.all()
-    serializer_class = PostReadSerializer
+
+    def get_serializer_class(self):
+        if self.request.method == "GET":
+            return PostReadSerializer
+        return PostCreateSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, 400)
 
 
-class SetLikeView(APIView):
+class SetLikeView(generics.GenericAPIView):
     permission_classes = (IsAuthenticated, )
+    serializer_class = LikeSerializer
 
-    def post(self, request, *args, **kwards):
-        return Response("Hi")
+    def post(self, request,  *args, **kwards):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.set_like()
+            return Response(status=201)
+        return Response(serializer.errors, status=400)
 
-class UnsetLikeView(APIView):
-    pass
+
+class RemoveLikeView(generics.GenericAPIView):
+    permission_classes = (IsAuthenticated, )
+    serializer_class = LikeSerializer
+
+    def post(self, request,  *args, **kwards):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.remove_like()
+            return Response(status=204)
+        return Response(serializer.errors, status=400)
 
