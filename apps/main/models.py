@@ -33,6 +33,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserAccountManager()
 
     email = models.EmailField("email", unique=True, null=False, blank=False)
+    full_name = models.CharField("full name", max_length=512, null=True, blank=True)
+    given_name = models.CharField("given name", max_length=256, null=True, blank=True)
+    family_name = models.CharField("family name", max_length=256, null=True, blank=True)
+    location = models.CharField("location", max_length=256, null=True, blank=True)
+    bio = models.CharField("bio", max_length=256, null=True, blank=True)
+    site = models.URLField("site", null=True, blank=True)
+    hunter_verified = models.BooleanField('hunter verified', default=False)
     is_staff = models.BooleanField('staff status', default=False)
     is_active = models.BooleanField('active', default=True)
 

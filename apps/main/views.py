@@ -1,19 +1,21 @@
-from rest_framework import generics, mixins
+from rest_framework import generics
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 
 from .models import (PostModel,
-                     LikeModel,
                      User)
 from .serializers import (PostCreateSerializer,
                           PostReadSerializer,
                           LikeSerializer,
-                          UserSerializer,
                           UserCreateSerializer)
 
 
 class UserCreateView(generics.CreateAPIView):
+    """
+    POST: create new user
+    required: email: <email>
+    required: password: <text>
+    """
     permission_classes = (AllowAny, )
 
     queryset = User.objects.all()
@@ -21,6 +23,13 @@ class UserCreateView(generics.CreateAPIView):
     
 
 class PostListView(generics.ListCreateAPIView):
+    """
+    GET:  posts list
+
+    POST: create new post by request user
+    required: title: <text>
+    required: text: <text>
+    """
     permission_classes = (IsAuthenticatedOrReadOnly, )
 
     queryset = PostModel.objects.all()
@@ -39,6 +48,10 @@ class PostListView(generics.ListCreateAPIView):
 
 
 class SetLikeView(generics.GenericAPIView):
+    """
+    POST: create like object to given post and request user
+    required: post: <id>
+    """
     permission_classes = (IsAuthenticated, )
     serializer_class = LikeSerializer
 
@@ -51,6 +64,10 @@ class SetLikeView(generics.GenericAPIView):
 
 
 class RemoveLikeView(generics.GenericAPIView):
+    """
+    POST: remove like object to given post and request user
+    required: post : <id>
+    """
     permission_classes = (IsAuthenticated, )
     serializer_class = LikeSerializer
 

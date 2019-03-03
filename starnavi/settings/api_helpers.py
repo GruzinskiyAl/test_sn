@@ -1,0 +1,1 @@
+HUNTER_API = "https://api.hunter.io/v2/email-verifier"
