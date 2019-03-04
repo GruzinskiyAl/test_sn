@@ -72,20 +72,13 @@ class Bot(object):
         self.set_likes()
 
 
-with open("config.json") as json_file:
-    json_str = json_file.read()
-    config = json.loads(json_str)
-
-bot = Bot(config, "http://127.0.0.1:8000")
-bot.run()
-
-# if __name__ == "__main__":
-#     try:
-#         with open(sys.argv[1]) as json_file:
-#             json_str = json_file.read()
-#             config = json.loads(json_str)
-#             domain = sys.argv[2]
-#             bot = Bot(config, domain)
-#             bot.run()
-#     except(IndexError, ):
-#         raise Exception("Config file and domain must be defined")
+if __name__ == "__main__":
+    try:
+        with open(sys.argv[1]) as json_file:
+            json_str = json_file.read()
+            config = json.loads(json_str)
+            domain = sys.argv[2]
+            bot = Bot(config, domain)
+            bot.run()
+    except(IndexError, ):
+        raise Exception("Config file and domain must be defined")
